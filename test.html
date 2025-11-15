@@ -1,232 +1,333 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HIRN | Ultimate Clinical Liaison Portal</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Harvard University — Student Portal </title>
 <style>
-/* GLOBAL */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f2f5f8;
-  color: #333;
-  transition: background 0.3s, color 0.3s;
-}
-.dark { background: #111; color: #eee; }
-
-/* LOADING SCREEN */
-#loading-screen {
-  position: fixed; inset: 0;
-  background: #003e6b;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.7s ease;
-}
-.spinner {
-  width: 60px; height: 60px;
-  border: 6px solid rgba(255,255,255,0.3);
-  border-top: 6px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* HEADER & NAV */
-header {
-  background:#003e6b;
-  color:white;
-  text-align:center;
-  padding:22px;
-}
-nav {
-  background:#005c9e;
-  display:flex;
-  justify-content:center;
-  gap:40px;
-  padding:12px 0;
-}
-nav a {
-  color:white; text-decoration:none; font-weight:bold; cursor:pointer;
-}
-nav a:hover { opacity:0.8; }
-
-/* PAGES */
-.page { display:none; padding:30px; max-width:1100px; margin:30px auto; background:white; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
-.active { display:block; }
-
-/* SECTIONS */
-.section-title { font-size:26px; color:#003e6b; margin-bottom:20px; }
-.card { background:#f7fafc; padding:20px; margin-bottom:15px; border-left:5px solid #005c9e; border-radius:6px; }
-
-/* NFC SCAN */
-#nfc-screen { text-align:center; background:#003e6b; color:white; }
-#nfc-circle { width:150px; height:150px; border-radius:50%; border:4px solid white; display:flex; justify-content:center; align-items:center; font-size:50px; margin:25px auto; animation: pulse 2s infinite; }
-@keyframes pulse { 0%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.7;}100%{transform:scale(1);opacity:1;} }
-#nfc-result { display:none; font-size:22px; margin-top:20px; }
-
-/* POPUPS */
-.popup {
-  position:fixed; inset:0; background:rgba(0,0,0,0.7);
-  display:none; justify-content:center; align-items:center; z-index:2000;
-}
-.popup-box {
-  background:white; color:#333; padding:25px; border-radius:12px; max-width:400px; text-align:center;
-}
-.popup button {
-  margin-top:15px; padding:10px 18px; border:none; background:#005c9e; color:white; border-radius:6px; cursor:pointer;
-}
-.dark .popup-box { background:#222; color:white; }
-
-/* ID CARD */
-#id-card { background:#005c9e; color:white; padding:20px; width:300px; border-radius:10px; margin:20px auto; text-align:center; display:none; }
-#id-card h3 { margin:5px 0; }
-
-/* FOOTER */
-footer { text-align:center; padding:20px; background:#003e6b; color:white; margin-top:40px; font-size:14px; }
+  /* Harvard Crimson theme, polished and responsive */
+  :root{
+    --bg-1:#1a0003;
+    --bg-2:#280006;
+    --card:#2b0005;
+    --accent:#A51C30; /* Harvard crimson */
+    --muted:#d6c6c8;
+    --glass: rgba(255,255,255,0.03);
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,var(--bg-1) 0%,var(--bg-2) 80%);color:#fff}
+  .wrap{max-width:1100px;margin:28px auto;padding:20px}
+  header{display:flex;align-items:center;gap:16px}
+  .brand{font-weight:800;font-size:20px;color:var(--accent)}
+  .sub{color:var(--muted);font-size:13px}
+  .card{background:linear-gradient(180deg,var(--glass),rgba(0,0,0,0.12));border-radius:var(--radius);padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.02)}
+  .login-area{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
+  .scan-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px;border-radius:10px;text-align:center;background:linear-gradient(180deg,#3b0009,#2a0006)}
+  .big-btn{background:linear-gradient(90deg,var(--accent),#c43449);border:none;padding:12px 14px;border-radius:10px;font-weight:700;cursor:pointer;color:#fff}
+  .muted{color:var(--muted);font-size:13px}
+  .progress{width:100%;height:12px;background:rgba(255,255,255,0.03);border-radius:10px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#ff6b6b);transition:width 0.12s linear}
+  .dashboard{display:none;grid-template-columns:2fr 1fr;gap:18px;margin-top:18px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px}
+  .grade-A{color:#b7f0d6;font-weight:700}
+  .grade-B{color:#ffd89a;font-weight:700}
+  .grade-C{color:#ffb3b3;font-weight:700}
+  .note{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;font-size:14px}
+  footer{margin-top:22px;color:var(--muted);font-size:13px}
+  .badge{background:#3d0008;padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px}
+  .demo-tag{color:#fff;background:var(--accent);padding:6px 10px;border-radius:8px;font-weight:700;font-size:12px}
+  .nav{display:flex;gap:8px;margin-top:12px}
+  .nav button{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+  .active{border-color:var(--accent);color:var(--accent)!important}
+  .small{font-size:13px}
+  @media(max-width:980px){.login-area{grid-template-columns:1fr}.dashboard{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="brand">Harvard University <span class="sub">— Student Portal </span></div>
+        <div class="sub"></div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
+    
+        <div class="badge">v1.2</div>
+      </div>
+    </header>
 
-<!-- LOADING -->
-<div id="loading-screen">
-  <div class="spinner"></div>
-  <p>Initializing Secure Portal…</p>
-</div>
+    <main>
+      <section class="login-area" id="loginArea">
+        <div class="card">
+          <h3 style="margin:0 0 8px 0">Scan Student ID to Login</h3>
+          <div class="muted" style="margin-bottom:10px">Hold your phone up to the screen and press <strong>Start Scan</strong> — </div>
 
-<header>
-  <h1>Hospital Integrated Response Network (HIRN)</h1>
-  <p>Ultimate Clinical Liaison Portal — Fictional Simulation</p>
-</header>
+          <div class="scan-box" aria-hidden="false">
+            <div style="width:100%;max-width:520px">
+              <div style="display:flex;gap:12px;align-items:center">
+                <img id="idIcon" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56'><rect rx='10' width='56' height='56' fill='%23A51C30'/><text x='50%' y='58%' font-size='24' text-anchor='middle' fill='%23ffffff' font-family='Arial' dy='6'>ID</text></svg>" alt="id" style="width:56px;height:56px;border-radius:8px;"/>
+                <div style="flex:1">
+                  <div style="font-weight:700">Student ID Scanner</div>
+                  <div class="muted small" style="font-size:13px">Device camera / NFC simulation </div>
+                </div>
+              </div>
 
-<nav>
-  <a onclick="openPage('dashboard')">Dashboard</a>
-  <a onclick="openPage('alerts')">Clinical Alerts</a>
-  <a onclick="openPage('lab')">Lab Routing</a>
-  <a onclick="openPage('isolation')">Isolation Units</a>
-  <a onclick="openPage('staff')">Staff Roster</a>
-  <a onclick="openPage('nfc')">Card Scan</a>
-  <a onclick="showID()">ID Card</a>
-  <a onclick="toggleDark()">Dark Mode</a>
-</nav>
+              <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+                <button id="startScan" class="big-btn" aria-label="Start Scan">Start Scan</button>
+               
+              </div>
 
-<!-- PAGES -->
-<div class="page active" id="dashboard">
-  <div class="section-title">Dashboard</div>
-  <div class="card"><strong>Status:</strong> Online – Connected to Hospital Systems</div>
-  <div class="card"><strong>User:</strong> Dylan R. Vale (Fictional)</div>
-  <div class="card"><strong>Facility:</strong> Massachusetts Regional Medical Center</div>
-  <div class="card"><strong>Clearance:</strong> Tier-2 Clinical Protocol Access</div>
-</div>
+              <div style="margin-top:12px">
+                <div class="progress" aria-hidden>
+                  <i id="progressBar"></i>
+                </div>
+                <div id="scanStatus" class="muted" style="margin-top:8px">Waiting to start scan…</div>
+              </div>
 
-<div class="page" id="alerts">
-  <div class="section-title">Clinical Alerts</div>
-  <div class="card">Airborne precautions updated for Unit 3B.</div>
-  <div class="card">Revised triage workflow for FUO cases.</div>
-  <div class="card">Ventilation checks scheduled at 18:00.</div>
-</div>
+              <div style="margin-top:14px" class="muted"></div>
+            </div>
+          </div>
+        </div>
 
-<div class="page" id="lab">
-  <div class="section-title">Lab Routing</div>
-  <div class="card">4 samples awaiting regional routing.</div>
-  <div class="card">Chain-of-custody needed for Specimen A47-22B.</div>
-  <div class="card">PCR analyzer calibration due tomorrow.</div>
-</div>
+        <div class="card">
+          <h3 style="margin:0 0 8px 0">Quick Preview</h3>
+          <div class="muted">Student: <strong id="quickName">—</strong></div>
+          <div style="margin-top:12px">
+            <div id="quickStats" class="muted">Not logged in</div>
+          </div>
+          <div style="margin-top:12px" id="qrArea"></div>
+        </div>
+      </section>
 
-<div class="page" id="isolation">
-  <div class="section-title">Isolation Units</div>
-  <div class="card">Unit 3B: Airborne isolation active.</div>
-  <div class="card">Unit 2A: Droplet precautions reinstated.</div>
-  <div class="card">Unit 4C: Negative pressure stable.</div>
-</div>
+      <section id="dashboardArea" class="dashboard" role="region" aria-label="Student dashboard">
+        <div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <h3 style="margin:0">Dashboard</h3>
+                <div class="muted">Welcome back, <strong id="studentName">Dylan</strong></div>
+              </div>
+              <div style="text-align:right">
+                <div class="muted">Major</div>
+                <div style="font-weight:700" id="studentMajor">Nursing</div>
+                <div class="muted small" id="studentGrad">Expected grad: May 2027</div>
+                <div class="nav" style="justify-content:flex-end;margin-top:8px">
+                  <button id="btnProfile" class="active">Overview</button>
+                  <button id="btnPrev">Prev Grades</button>
+                  <button id="btnTeachers">Teachers</button>
+                  <button id="btnAnnounce">Announcements</button>
+                  <button id="btnSettings">Settings</button>
+                </div>
+              </div>
+            </div>
 
-<div class="page" id="staff">
-  <div class="section-title">Staff Roster</div>
-  <div class="card">ID Lead: Dr. M. Harrens</div>
-  <div class="card">Charge Nurse: L. Newhall</div>
-  <div class="card">On-Call Tech: J. Redd</div>
-</div>
+            <div style="margin-top:14px" class="grid">
+              <div class="card" style="padding:12px">
+                <div class="muted">GPA</div>
+                <div style="font-size:28px;font-weight:800;margin-top:6px" id="gpaVal">4.5</div>
+                <div class="muted" style="margin-top:8px" id="semesterInfo">Semester: Fall 2025</div>
+              </div>
 
-<div class="page" id="nfc">
-  <div class="section-title" style="color:white;">NFC Credential Scan</div>
-  <div id="nfc-circle">📶</div>
-  <h2>Hold card close to device</h2>
-  <p>Reading secure credential…</p>
-  <div id="nfc-result"><strong>Dylan Taylor — Verified</strong></div>
-</div>
+              <div class="card" style="padding:12px">
+                <div class="muted">Credits (earned)</div>
+                <div style="font-size:28px;font-weight:800;margin-top:6px" id="creditsVal">72</div>
+                <div class="muted" style="margin-top:8px" id="gradInfo">Expected grad: May 2027</div>
+              </div>
+            </div>
 
-<!-- POPUP -->
-<div id="popup" class="popup">
-  <div class="popup-box" id="popup-content">
-    <p>Alert!</p>
-    <button onclick="closePopup()">Close</button>
+            <div id="overviewBlock" style="margin-top:16px">
+              <h4 style="margin:0 0 8px 0">Recent Test Scores</h4>
+              <table>
+                <thead>
+                  <tr><th>Course</th><th>Assessment</th><th>Score</th><th>Instructor</th></tr>
+                </thead>
+                <tbody id="scoresTable"></tbody>
+              </table>
+
+              <div style="margin-top:12px">
+                <h4 style="margin:0 0 8px 0">Homework & Upcoming</h4>
+                <table>
+                  <thead><tr><th>Course</th><th>Assignment</th><th>Due</th><th>Status</th></tr></thead>
+                  <tbody id="hwTable"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="notesBlock" style="margin-top:12px;display:none">
+              <h4 style="margin:0 0 8px 0">Teacher Notes / Messages</h4>
+              <div id="notesArea"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <aside>
+          <div class="card">
+            <h4 style="margin:0 0 8px 0">Course Grades</h4>
+            <div id="gradesList"></div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Notifications</h4>
+            <ul id="alerts" style="padding-left:16px;margin:0"></ul>
+          </div>
+
+          <div class="card" style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+            <button id="logoutBtn" class="big-btn">Log out</button>
+          </div>
+        </aside>
+      </section>
+
+    </main>
+
+    <footer>
+      <div></div>
+    </footer>
   </div>
-</div>
-
-<!-- ID CARD -->
-<div id="id-card">
-  <h3>Dylan Taylor</h3>
-  <p>Hospital Liaison</p>
-  <p>Massachusetts Regional Medical Center</p>
-  <p>Clearance: Tier-2</p>
-</div>
-
-<footer>
-  © 2025 HIRN Simulation Environment — All Information Fictional
-</footer>
 
 <script>
-/* LOADING */
-window.onload = () => {
-  setTimeout(() => {
-    document.getElementById("loading-screen").style.opacity = 0;
-    setTimeout(() => { document.getElementById("loading-screen").style.display = "none"; }, 700);
-  }, 1500);
+/* ---------------------- Demo data (editable) ---------------------- */
+const demoStudent = {
+  name: "Dylan Read",
+  id: "NB-2025-00431",
+  gpa: 4.78,
+  credits: 72,
+  major: "Nursing",
+  gradDate: "Dec 11, 2026",
+  scores: [
+    {course:"NURS 201 - Anatomy", assessment:"Midterm", score:"91 / 100", instructor:"Dr. Mallory"},
+    {course:"NURS 140 - Fundamentals", assessment:"Practical", score:"88 / 100", instructor:"Prof. Mills"},
+    {course:"BIO 110 - Biology", assessment:"Lab", score:"95 / 100", instructor:"Dr. Rowan"}
+  ],
+  hw: [
+    {course:"NURS 201", title:"Chapter 6 Worksheet", due:"Nov 20, 2025", status:"In progress"},
+    {course:"BIO 110", title:"Lab Prep", due:"Nov 18, 2025", status:"Not started"}
+  ],
+  grades: [
+    {course:"NURS 201", grade:"A-"},
+    {course:"BIO 110", grade:"A"},
+    {course:"NURS 140", grade:"B+"}
+  ],
+  notes: [
+    {from:"Dr. Mallory", text:"Excellent participation in simulation lab."}
+  ],
+  alerts: [
+    "Clinical rotation schedule updated for Spring 2026",
+    "Campus blood drive on Dec 1, 2025"
+  ],
+  prevGrades: [
+    {term:"Spring 2025", courses:[{course:"BIO 101",grade:"A-"},{course:"Chem 101",grade:"B+"}]},
+    {term:"Fall 2024", courses:[{course:"ENG 101",grade:"A"},{course:"Math 101",grade:"B"}]}
+  ],
+  teachers:[
+    {name:"Dr. Mallory", course:"NURS 201", email:"mallory@.edu"},
+    {name:"Prof. Mills", course:"NURS 140", email:"mills@.edu"}
+  ],
+  announcements:[
+    {title:"Exam review sessions", date:"Nov 13, 2025"},
+    {title:"Career fair registration", date:"Nov 19, 2025"}
+  ]
 };
 
-/* PAGE NAVIGATION */
-function openPage(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
+/* ---------------------- Helpers ---------------------- */
+function beep(duration=120,freq=880,vol=0.06){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator();const g=ctx.createGain();o.type='sine';o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(ctx.destination);o.start();setTimeout(()=>{o.stop();ctx.close();},duration);}catch(e){}}
+function setProgress(p){document.getElementById('progressBar').style.width=Math.max(0,Math.min(100,p))+'%'}
 
-  if(page==='nfc') {
-    document.getElementById("nfc-result").style.display = "none";
-    setTimeout(()=>{document.getElementById("nfc-result").style.display="block"; playBeep();},2500);
-  }
+/* ---------------------- Populate UI ---------------------- */
+function populateDashboard(){
+  document.getElementById('studentName').textContent = demoStudent.name;
+  document.getElementById('studentMajor').textContent = demoStudent.major;
+  document.getElementById('studentGrad').textContent = 'Graduation: ' + demoStudent.gradDate;
+  document.getElementById('gpaVal').textContent = demoStudent.gpa.toFixed(2);
+  document.getElementById('creditsVal').textContent = demoStudent.credits;
+  document.getElementById('gradInfo').textContent = 'Graduation: ' + demoStudent.gradDate;
+  document.getElementById('quickName').textContent = demoStudent.name + ' — ' + demoStudent.id;
+  document.getElementById('quickStats').textContent = `GPA ${demoStudent.gpa} • ${demoStudent.credits} credits • ${demoStudent.major}`;
+
+  // scores
+  const scoresTable = document.getElementById('scoresTable'); scoresTable.innerHTML = '';
+  demoStudent.scores.forEach(s=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${s.course}</td><td>${s.assessment}</td><td>${s.score}</td><td>${s.instructor}</td>`;scoresTable.appendChild(tr);});
+  // hw
+  const hwTable=document.getElementById('hwTable'); hwTable.innerHTML='';
+  demoStudent.hw.forEach(h=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${h.course}</td><td>${h.title}</td><td>${h.due}</td><td>${h.status}</td>`;hwTable.appendChild(tr);});
+  // grades list
+  const gradesList=document.getElementById('gradesList'); gradesList.innerHTML='';
+  demoStudent.grades.forEach(g=>{const div=document.createElement('div');div.style.padding='8px 0';div.style.borderBottom='1px dashed rgba(255,255,255,0.03)';div.innerHTML=`<div style='display:flex;justify-content:space-between'><div>${g.course}</div><div style='font-weight:700'>${g.grade}</div></div>`;gradesList.appendChild(div);});
+  // notes
+  const notesArea=document.getElementById('notesArea'); notesArea.innerHTML='';
+  demoStudent.notes.forEach(n=>{const d=document.createElement('div');d.className='note';d.style.marginBottom='8px';d.innerHTML=`<div style='font-weight:700'>${n.from}</div><div style='margin-top:6px'>${n.text}</div>`;notesArea.appendChild(d);});
+  // alerts
+  const alerts=document.getElementById('alerts'); alerts.innerHTML=''; demoStudent.alerts.forEach(a=>{const li=document.createElement('li');li.textContent=a;alerts.appendChild(li);});
 }
 
-/* DARK MODE */
-function toggleDark() { document.body.classList.toggle('dark'); }
+/* ---------------------- Scan logic ---------------------- */
+const startScan = document.getElementById('startScan');
+startScan.addEventListener('click', ()=>{
+  startScan.disabled = true; startScan.textContent = 'Scanning — hold phone to screen...';
+  document.getElementById('scanStatus').textContent = 'Scanning credentials… please hold still';
+  setProgress(2); beep(120,880,0.06);
+  const total = 7000; const start = Date.now();
+  const tick = setInterval(()=>{
+    const elapsed = Date.now()-start; const pct = Math.round((elapsed/total)*100);
+    setProgress(pct);
+    if(elapsed >= total){ clearInterval(tick); setProgress(100); beep(220,1200,0.08);
+      setTimeout(()=>{ document.getElementById('scanStatus').textContent = 'Credentials verified — welcome!'; startScan.textContent = 'Scan complete';
+        // remove scan area smoothly
+        const loginArea = document.getElementById('loginArea'); loginArea.style.transition = 'opacity 360ms ease'; loginArea.style.opacity = '0'; setTimeout(()=>{ loginArea.style.display='none';
+          // show dashboard
+          const dash = document.getElementById('dashboardArea'); dash.style.display = 'grid'; populateDashboard();
+        },380);
+      },400);
+    } else {
+      if(elapsed < 1000) document.getElementById('scanStatus').textContent = 'Initializing scanner…';
+      else if(elapsed < 3000) document.getElementById('scanStatus').textContent = 'Reading ID data…';
+      else if(elapsed < 5000) document.getElementById('scanStatus').textContent = 'Verifying institutional credentials…';
+      else document.getElementById('scanStatus').textContent = 'Finalizing…';
+    }
+  },120);
+});
 
-/* POPUP */
-function showPopup(msg) {
-  document.getElementById("popup-content").innerHTML = `<p>${msg}</p><button onclick="closePopup()">Close</button>`;
-  document.getElementById("popup").style.display="flex";
-}
-function closePopup() { document.getElementById("popup").style.display="none"; }
 
-/* ID CARD */
-function showID() {
-  document.getElementById("id-card").style.display="block";
-  setTimeout(()=>{document.getElementById("id-card").style.display="none";},4000);
-}
 
-/* SOUND EFFECT */
-function playBeep(){
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.type="square"; o.frequency.setValueAtTime(800,ctx.currentTime);
-  o.start(); o.stop(ctx.currentTime+0.15);
-}
+/* Navigation */
+const sections = {overview:document.getElementById('overviewBlock'), notes:document.getElementById('notesBlock')};
+document.getElementById('btnProfile').addEventListener('click', ()=>{ setActive('btnProfile'); sections.overview.style.display='block'; sections.notes.style.display='none'; });
+document.getElementById('btnPrev').addEventListener('click', ()=>{ setActive('btnPrev'); showPrevGrades(); });
+document.getElementById('btnTeachers').addEventListener('click', ()=>{ setActive('btnTeachers'); showTeachers(); });
+document.getElementById('btnAnnounce').addEventListener('click', ()=>{ setActive('btnAnnounce'); showAnnouncements(); });
+document.getElementById('btnSettings').addEventListener('click', ()=>{ setActive('btnSettings'); showSettings(); });
+
+document.getElementById('logoutBtn').addEventListener('click', ()=>{ location.reload(); });
+
+function setActive(id){['btnProfile','btnPrev','btnTeachers','btnAnnounce','btnSettings'].forEach(b=>document.getElementById(b).classList.remove('active')); document.getElementById(id).classList.add('active');}
+
+/* Prev grades modal-like section */
+function showPrevGrades(){ sections.overview.style.display='none'; sections.notes.style.display='none';
+  // build content in scoresTable area for simplicity
+  const scoresTable = document.getElementById('scoresTable'); scoresTable.innerHTML='';
+  demoStudent.prevGrades.forEach(term=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td colspan='4' style='font-weight:700;padding-top:12px'>${term.term}</td>`; scoresTable.appendChild(tr); term.courses.forEach(c=>{ const tr2=document.createElement('tr'); tr2.innerHTML=`<td>${c.course}</td><td></td><td></td><td style='font-weight:700'>${c.grade}</td>`; scoresTable.appendChild(tr2); }); }); }
+
+function showTeachers(){ sections.overview.style.display='none'; sections.notes.style.display='none'; const scoresTable = document.getElementById('scoresTable'); scoresTable.innerHTML=''; demoStudent.teachers.forEach(t=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td colspan='4'><strong>${t.name}</strong> — ${t.course} — <span class='muted'>${t.email}</span></td>`; scoresTable.appendChild(tr); }); }
+
+function showAnnouncements(){ sections.overview.style.display='none'; sections.notes.style.display='none'; const scoresTable = document.getElementById('scoresTable'); scoresTable.innerHTML=''; demoStudent.announcements.forEach(a=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td colspan='4'><strong>${a.title}</strong> <span class='muted' style='float:right'>${a.date}</span></td>`; scoresTable.appendChild(tr); }); }
+
+function showSettings(){ sections.overview.style.display='none'; sections.notes.style.display='none'; const scoresTable = document.getElementById('scoresTable'); scoresTable.innerHTML=`<tr><td colspan='4'>
+  <label style='display:block;margin-bottom:8px'>Change display name</label>
+  <input id='nameInput' placeholder='Enter name' style='padding:8px;width:60%;border-radius:8px;border:none;margin-right:8px' />
+  <button id='saveName' class='big-btn'>Save</button>
+</td></tr>`;
+  document.getElementById('saveName').addEventListener('click', ()=>{ const v=document.getElementById('nameInput').value.trim(); if(v){ demoStudent.name=v; document.getElementById('studentName').textContent=v; document.getElementById('quickName').textContent = v + ' — ' + demoStudent.id; document.getElementById('scanStatus').textContent='Name updated.'; } }); }
+
+// initialize overview active
+sections.overview.style.display='block';
+
+/* Accessibility: allow Enter key to start scan when focused */
+startScan.addEventListener('keyup', (e)=>{ if(e.key==='Enter') startScan.click(); });
+
 </script>
-
 </body>
 </html>
+`
