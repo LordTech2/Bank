@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capital One — Card Services</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: #f2f4f8;
+      color: #1f2933;
+    }
+
+    header {
+      background: linear-gradient(90deg, #003b71 0%, #cc1122 100%);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    header img { height: 36px; }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+    nav a:hover { opacity: 1; }
+
+    .container {
+      max-width: 920px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 1.8rem;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .title { font-size: 1.6rem; font-weight: 600; color: #003b71; margin-bottom: 1rem; }
+
+    .card-section {
+      margin-bottom: 1.6rem;
+      padding: 1rem;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+      border: 1px solid #eef3f9;
+    }
+
+    .card-section h2 { font-size: 1.15rem; color: #003b71; margin-bottom: 0.5rem; }
+    .card-section p { color: #444; margin-bottom: 0.6rem; }
+
+    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+
+    /* Toggle Switch */
+    .switch { position: relative; width: 52px; height: 28px; }
+    .switch input { opacity:0; width:0; height:0; }
+    .slider { position:absolute; inset:0; background:#d6d6d6; border-radius:28px; transition: all .22s; }
+    .slider::before { content:""; position:absolute; left:4px; top:4px; width:20px; height:20px; background:#fff; border-radius:50%; transition: all .22s; }
+    input:checked + .slider { background: #003b71; }
+    input:checked + .slider::before { transform: translateX(24px); }
+
+    /* Buttons */
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px; border-radius:10px; text-decoration:none; color:#fff; background:#003b71; border:0; cursor:pointer; font-size:0.95rem; }
+    .btn.alt { background:#cc1122; }
+    .btn.ghost { background:transparent; color:#003b71; border:1px solid #d6e4fb; }
+    .btn:active { transform:translateY(1px); }
+
+    .small { padding:8px 10px; font-size:0.9rem; }
+
+    .muted { color:#666; font-size:0.95rem; }
+
+    footer { text-align:center; color:#777; margin-top:2rem; font-size:0.85rem; }
+
+    @media (max-width:720px){
+      header { flex-direction:column; gap:8px; text-align:center; }
+      .row { flex-direction:column; align-items:flex-start; }
+      .container{ margin:1rem; padding:1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="capital-one-logo.svg" alt="Capital One" />
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="billpay.html">Bill Pay</a>
+    <a href="wire-transfer.html">Wire Transfer</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="title">Card Services</div>
+
+  <!-- Card Lock -->
+  <section class="card-section">
+    <h2>Card Lock</h2>
+    <div class="row">
+      <label class="switch" title="Toggle card lock">
+        <input id="lockCard" type="checkbox" aria-label="Lock card" />
+        <span class="slider"></span>
+      </label>
+      <div>
+        <div class="muted">Instantly prevent new purchases, cash advances and balance transfers.</div>
+        <div style="margin-top:8px"><button id="btnLockInfo" class="btn small ghost">What happens when I lock?</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Report Lost / Stolen + Cancel Card -->
+  <section class="card-section">
+    <h2>Security Actions</h2>
+    <p>Quick actions if your card is compromised or you no longer want it active.</p>
+    <div class="row">
+      <button id="reportLost" class="btn alt small">Report Lost / Stolen</button>
+      <button id="cancelCard" class="btn small">Cancel Card</button>
+      <button id="orderReplacement" class="btn ghost small">Order Replacement</button>
+    </div>
+  </section>
+
+  <!-- Travel Notice -->
+  <section class="card-section">
+    <h2>Travel Notices</h2>
+    <p>Tell us where you'll be so we don't block legitimate charges while you're away.</p>
+    <div class="row">
+      <button id="addTravel" class="btn small">Add Travel Notice</button>
+      <button id="viewTravel" class="btn ghost small">View Notices</button>
+    </div>
+  </section>
+
+  <!-- PIN Services -->
+  <section class="card-section">
+    <h2>PIN & Card Settings</h2>
+    <p class="muted">Reset your PIN, set spending limits, or request contactless settings.</p>
+    <div class="row">
+      <button id="managePin" class="btn small">Reset PIN</button>
+      <button id="spendLimit" class="btn ghost small">Set Spending Limit</button>
+      <button id="contactless" class="btn ghost small">Toggle Contactless</button>
+    </div>
+  </section>
+
+  <!-- UX helper -->
+  <section class="card-section">
+    <h2>Support & Confirmation</h2>
+    <p class="muted">Most actions below are simulated in this demo. Real requests would be sent to bank systems and you would receive confirmation via email or SMS.</p>
+    <div class="row">
+      <button id="emailConfirm" class="btn ghost small">Send Confirmation Email</button>
+    </div>
+  </section>
+
+</div>
+
+<footer>© 2025 Capital One. All rights reserved.</footer>
+
+<div id="modalOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.45); display:none; align-items:center; justify-content:center; z-index:99999;">
+  <div id="modalBox" style="background:#fff; width:90%; max-width:360px; padding:20px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.25);">
+    <h3 id="modalTitle" style="margin-bottom:10px; font-size:1.2rem; color:#003b71;"></h3>
+    <p id="modalMessage" style="margin-bottom:14px; color:#333;"></p>
+    <input id="modalInput" style="width:100%; padding:8px; font-size:1rem; border-radius:8px; border:1px solid #c7d3e1; margin-bottom:14px; display:none;" />
+    <div style="display:flex; gap:10px; justify-content:flex-end;">
+      <button id="modalCancel" style="padding:8px 12px; border-radius:8px; background:#ccc; border:0; cursor:pointer;">Cancel</button>
+      <button id="modalOK" style="padding:8px 12px; border-radius:8px; background:#003b71; color:#fff; border:0; cursor:pointer;">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const lock = document.getElementById('lockCard');
+  const reportLost = document.getElementById('reportLost');
+  const cancelCard = document.getElementById('cancelCard');
+  const addTravel = document.getElementById('addTravel');
+  const managePin = document.getElementById('managePin');
+  const spendLimit = document.getElementById('spendLimit');
+
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalBox = document.getElementById('modalBox');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+  const modalInput = document.getElementById('modalInput');
+  const modalOK = document.getElementById('modalOK');
+  const modalCancel = document.getElementById('modalCancel');
+
+  function showModal(title, message, options={input:false}){
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    modalInput.style.display = options.input ? 'block' : 'none';
+    modalInput.value = '';
+    modalOverlay.style.display = 'flex';
+
+    return new Promise(resolve => {
+      modalOK.onclick = () => {
+        modalOverlay.style.display = 'none';
+        resolve(options.input ? modalInput.value : true);
+      };
+      modalCancel.onclick = () => {
+        modalOverlay.style.display = 'none';
+        resolve(false);
+      };
+    });
+  }
+
+  function toast(msg){
+    const t = document.createElement('div');
+    t.textContent = msg;
+    Object.assign(t.style,{position:'fixed', bottom:'20px', left:'50%', transform:'translateX(-50%)', background:'#003b71', color:'#fff', padding:'12px 18px', borderRadius:'10px', zIndex:9999, opacity:'1', transition:'opacity .4s'});
+    document.body.appendChild(t);
+    setTimeout(()=> t.style.opacity = '0', 2200);
+    setTimeout(()=> t.remove(), 2600);
+  }
+
+  lock.addEventListener('change', ()=>{
+    toast(lock.checked ? 'Card Locked' : 'Card Unlocked');
+  });
+
+  reportLost.addEventListener('click', async ()=>{
+    const ok = await showModal('Report Lost/Stolen', 'This will lock the card and order a replacement. Continue?');
+    if(ok){ lock.checked = true; lock.dispatchEvent(new Event('change')); toast('Card Reported & Locked'); }
+  });
+
+  cancelCard.addEventListener('click', async ()=>{
+    const ok = await showModal('Cancel Card', 'This action is permanent. Cancel card?');
+    if(ok){ lock.checked = true; lock.dispatchEvent(new Event('change')); toast('Card Canceled'); }
+  });
+
+  addTravel.addEventListener('click', async ()=>{
+    const dest = await showModal('Travel Notice', 'Enter your destination:', {input:true});
+    if(dest){ toast('Travel Notice Added for ' + dest); }
+  });
+
+  managePin.addEventListener('click', async ()=>{
+    const pin = await showModal('Reset PIN', 'Enter a new 4-digit PIN:', {input:true});
+    if(pin && /^\d{4}$/.test(pin)){ toast('PIN Updated'); }
+    else if(pin){ toast('Invalid PIN'); }
+  });
+
+  spendLimit.addEventListener('click', async ()=>{
+    const amt = await showModal('Spending Limit', 'Enter new daily limit:', {input:true});
+    if(amt && !isNaN(Number(amt))){ toast('Limit Set to $' + Number(amt).toFixed(2)); }
+    else if(amt){ toast('Invalid Amount'); }
+  });
+});
+</script>
+
+</body>
+</html>

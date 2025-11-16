@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capital One — Transactions</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: #f2f4f8;
+      color: #1f2933;
+    }
+
+    header {
+      background: linear-gradient(90deg, #003b71 0%, #cc1122 100%);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    header img { height: 36px; }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+    nav a:hover { opacity: 1; }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #003b71;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Transaction Item */
+    .tx {
+      padding: 1rem;
+      border-bottom: 1px solid #e1e4e8;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .tx:hover { background: #f7f9fc; }
+
+    .tx-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tx-title { font-size: 1rem; font-weight: 600; }
+    .tx-date { font-size: 0.9rem; color: #555; }
+    .tx-amount { font-weight: bold; font-size: 1.1rem; }
+    .pos { color: #0b7a2d; }
+    .neg { color: #cc1122; }
+
+    .tx-details {
+      display: none;
+      padding: 1rem;
+      background: #f3f6fb;
+      border-radius: 10px;
+      margin-top: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .tx-details div { margin-bottom: 0.4rem; }
+
+    footer {
+      text-align: center;
+      color: #777;
+      font-size: 0.85rem;
+      margin-top: 3rem;
+    }
+    footer a { color: #003b71; text-decoration: none; }
+
+  </style>
+
+  <script>
+    function toggleDetails(id) {
+      const box = document.getElementById(id);
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+  </script>
+
+</head>
+<body>
+
+<header>
+  <img src="capital-one-logo.svg" alt="Capital One" />
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="billpay.html">Bill Pay</a>
+    <a href="wire-transfer.html">Wire Transfer</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="title">Recent Transactions — Checking • 6739</div>
+
+  <!-- Transaction 1 -->
+  <div class="tx" onclick="toggleDetails('tx1')">
+    <div class="tx-header">
+      <div>
+        <div class="tx-title">Deposit — Payroll</div>
+        <div class="tx-date">Nov 14, 2025</div>
+      </div>
+      <div class="tx-amount pos">+$4,982.76</div>
+    </div>
+    <div class="tx-details" id="tx1">
+      <div><strong>Type:</strong> Direct Deposit</div>
+      <div><strong>Employer:</strong> APEX INDUSTRIES LLC</div>
+      <div><strong>Status:</strong> Completed</div>
+      <div><strong>Reference:</strong> 882921004</div>
+    </div>
+  </div>
+
+  <!-- Transaction 2 -->
+  <div class="tx" onclick="toggleDetails('tx2')">
+    <div class="tx-header">
+      <div>
+        <div class="tx-title">Amazon Purchase</div>
+        <div class="tx-date">Nov 13, 2025</div>
+      </div>
+      <div class="tx-amount neg">-$129.42</div>
+    </div>
+    <div class="tx-details" id="tx2">
+      <div><strong>Category:</strong> Shopping</div>
+      <div><strong>Payment Method:</strong> Debit Card • 6739</div>
+      <div><strong>Status:</strong> Posted</div>
+      <div><strong>Merchant ID:</strong> AMZ-2044921</div>
+    </div>
+  </div>
+
+  <!-- Transaction 3 -->
+  <div class="tx" onclick="toggleDetails('tx3')">
+    <div class="tx-header">
+      <div>
+        <div class="tx-title">Chipotle</div>
+        <div class="tx-date">Nov 12, 2025</div>
+      </div>
+      <div class="tx-amount neg">-$18.49</div>
+    </div>
+    <div class="tx-details" id="tx3">
+      <div><strong>Category:</strong> Dining</div>
+      <div><strong>Payment Method:</strong> Debit Card • 6739</div>
+      <div><strong>Status:</strong> Posted</div>
+      <div><strong>Location:</strong> Austin, TX</div>
+    </div>
+  </div>
+
+  <!-- Transaction 4 -->
+  <div class="tx" onclick="toggleDetails('tx4')">
+    <div class="tx-header">
+      <div>
+        <div class="tx-title">WIRE TRANSFER SENT</div>
+        <div class="tx-date">Nov 11, 2025</div>
+      </div>
+      <div class="tx-amount neg">-$2,500.00</div>
+    </div>
+    <div class="tx-details" id="tx4">
+      <div><strong>Transfer Type:</strong> Outgoing Wire</div>
+      <div><strong>Recipient:</strong> JOHNSON HOLDINGS LLC</div>
+      <div><strong>Routing Number:</strong> 026009593</div>
+      <div><strong>Status:</strong> Completed</div>
+    </div>
+  </div>
+
+  <!-- Transaction 5 -->
+  <div class="tx" onclick="toggleDetails('tx5')">
+    <div class="tx-header">
+      <div>
+        <div class="tx-title">Spotify Subscription</div>
+        <div class="tx-date">Nov 10, 2025</div>
+      </div>
+      <div class="tx-amount neg">-$9.99</div>
+    </div>
+    <div class="tx-details" id="tx5">
+      <div><strong>Category:</strong> Entertainment</div>
+      <div><strong>Payment Method:</strong> Debit Card • 6739</div>
+      <div><strong>Status:</strong> Recurring Payment</div>
+      <div><strong>Merchant ID:</strong> SPT-500391</div>
+    </div>
+    <!-- Extra Transactions -->
+
+  <div class="tx" onclick="toggleDetails('tx6')">
+    <div class="tx-header"><div><div class="tx-title">Uber Ride</div><div class="tx-date">Nov 9, 2025</div></div><div class="tx-amount neg">-$23.45</div></div>
+    <div class="tx-details" id="tx6"><div><strong>Category:</strong> Transport</div><div><strong>Status:</strong> Posted</div><div><strong>Driver:</strong> UBER *DAVID</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx7')">
+    <div class="tx-header"><div><div class="tx-title">DoorDash Order</div><div class="tx-date">Nov 9, 2025</div></div><div class="tx-amount neg">-$42.19</div></div>
+    <div class="tx-details" id="tx7"><div><strong>Category:</strong> Food Delivery</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant:</strong> DOORDASH *WINGSTOP</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx8')">
+    <div class="tx-header"><div><div class="tx-title">CVS Pharmacy</div><div class="tx-date">Nov 8, 2025</div></div><div class="tx-amount neg">-$14.87</div></div>
+    <div class="tx-details" id="tx8"><div><strong>Category:</strong> Health</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant ID:</strong> CVS-2291</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx9')">
+    <div class="tx-header"><div><div class="tx-title">Amazon Purchase</div><div class="tx-date">Nov 7, 2025</div></div><div class="tx-amount neg">-$88.31</div></div>
+    <div class="tx-details" id="tx9"><div><strong>Category:</strong> Shopping</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant:</strong> AMZ-2094421</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx10')">
+    <div class="tx-header"><div><div class="tx-title">Walmart Supercenter</div><div class="tx-date">Nov 6, 2025</div></div><div class="tx-amount neg">-$154.89</div></div>
+    <div class="tx-details" id="tx10"><div><strong>Category:</strong> Grocery</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant ID:</strong> WMT-88219</div></div>
+  </div>
+
+  <!-- Additional Transactions -->
+
+  <div class="tx" onclick="toggleDetails('tx11')">
+    <div class="tx-header"><div><div class="tx-title">Starbucks</div><div class="tx-date">Nov 6, 2025</div></div><div class="tx-amount neg">-$7.85</div></div>
+    <div class="tx-details" id="tx11"><div><strong>Category:</strong> Coffee</div><div><strong>Status:</strong> Posted</div><div><strong>Location:</strong> Austin, TX</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx12')">
+    <div class="tx-header"><div><div class="tx-title">H-E-B Grocery</div><div class="tx-date">Nov 6, 2025</div></div><div class="tx-amount neg">-$62.44</div></div>
+    <div class="tx-details" id="tx12"><div><strong>Category:</strong> Grocery</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant:</strong> HEB-29301</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx13')">
+    <div class="tx-header"><div><div class="tx-title">Shell Gas</div><div class="tx-date">Nov 5, 2025</div></div><div class="tx-amount neg">-$48.22</div></div>
+    <div class="tx-details" id="tx13"><div><strong>Category:</strong> Fuel</div><div><strong>Status:</strong> Posted</div><div><strong>Location:</strong> Austin, TX</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx14')">
+    <div class="tx-header"><div><div class="tx-title">Target</div><div class="tx-date">Nov 5, 2025</div></div><div class="tx-amount neg">-$92.11</div></div>
+    <div class="tx-details" id="tx14"><div><strong>Category:</strong> Retail</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant:</strong> TGT-88301</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx15')">
+    <div class="tx-header"><div><div class="tx-title">Uber Eats</div><div class="tx-date">Nov 4, 2025</div></div><div class="tx-amount neg">-$36.54</div></div>
+    <div class="tx-details" id="tx15"><div><strong>Category:</strong> Delivery</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant:</strong> UBER EATS *TACO CABANA</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx16')">
+    <div class="tx-header"><div><div class="tx-title">Apple.com</div><div class="tx-date">Nov 4, 2025</div></div><div class="tx-amount neg">-$4.99</div></div>
+    <div class="tx-details" id="tx16"><div><strong>Category:</strong> Subscription</div><div><strong>Status:</strong> Posted</div><div><strong>Service:</strong> iCloud Storage</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx17')">
+    <div class="tx-header"><div><div class="tx-title">McDonald's</div><div class="tx-date">Nov 3, 2025</div></div><div class="tx-amount neg">-$11.23</div></div>
+    <div class="tx-details" id="tx17"><div><strong>Category:</strong> Dining</div><div><strong>Status:</strong> Posted</div><div><strong>Location:</strong> Austin, TX</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx18')">
+    <div class="tx-header"><div><div class="tx-title">Walgreens</div><div class="tx-date">Nov 3, 2025</div></div><div class="tx-amount neg">-$19.67</div></div>
+    <div class="tx-details" id="tx18"><div><strong>Category:</strong> Pharmacy</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant ID:</strong> WGS-50221</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx19')">
+    <div class="tx-header"><div><div class="tx-title">Panda Express</div><div class="tx-date">Nov 2, 2025</div></div><div class="tx-amount neg">-$13.94</div></div>
+    <div class="tx-details" id="tx19"><div><strong>Category:</strong> Dining</div><div><strong>Status:</strong> Posted</div><div><strong>Location:</strong> Austin, TX</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx20')">
+    <div class="tx-header"><div><div class="tx-title">Nike.com</div><div class="tx-date">Nov 1, 2025</div></div><div class="tx-amount neg">-$122.00</div></div>
+    <div class="tx-details" id="tx20"><div><strong>Category:</strong> Apparel</div><div><strong>Status:</strong> Posted</div><div><strong>Merchant:</strong> NIKE-ONLINE</div></div>
+  </div>
+
+  <!-- Added Deposits and Withdrawals for November -->
+
+  <div class="tx" onclick="toggleDetails('tx21')">
+    <div class="tx-header"><div><div class="tx-title">Deposit — Payroll</div><div class="tx-date">Nov 15, 2025</div></div><div class="tx-amount pos">+$5,012.44</div></div>
+    <div class="tx-details" id="tx21"><div><strong>Type:</strong> Direct Deposit</div><div><strong>Employer:</strong> APEX INDUSTRIES LLC</div><div><strong>Status:</strong> Completed</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx22')">
+    <div class="tx-header"><div><div class="tx-title">Deposit — Bonus</div><div class="tx-date">Nov 1, 2025</div></div><div class="tx-amount pos">+$1,250.00</div></div>
+    <div class="tx-details" id="tx22"><div><strong>Type:</strong> Employer Bonus</div><div><strong>Status:</strong> Completed</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx23')">
+    <div class="tx-header"><div><div class="tx-title">Cash Withdrawal</div><div class="tx-date">Nov 10, 2025</div></div><div class="tx-amount neg">-$200.00</div></div>
+    <div class="tx-details" id="tx23"><div><strong>Type:</strong> ATM Withdrawal</div><div><strong>ATM Location:</strong> Austin, TX</div><div><strong>Status:</strong> Posted</div></div>
+  </div>
+
+  <div class="tx" onclick="toggleDetails('tx24')">
+    <div class="tx-header"><div><div class="tx-title">Cash Withdrawal</div><div class="tx-date">Nov 5, 2025</div></div><div class="tx-amount neg">-$100.00</div></div>
+    <div class="tx-details" id="tx24"><div><strong>Type:</strong> ATM Withdrawal</div><div><strong>ATM Location:</strong> Austin, TX</div><div><strong>Status:</strong> Posted</div></div>
+  </div>
+
+</div>
+</div>
+<footer>
+  © 2025 Capital One. All rights reserved.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capital One — Accounts</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: #f2f4f8;
+      color: #1f2933;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(90deg, #003b71 0%, #cc1122 100%);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    header img {
+      height: 36px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+    nav a:hover { opacity: 1; }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #003b71;
+      margin-bottom: 1rem;
+    }
+
+    /* ACCOUNT CARDS */
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+      gap: 1.5rem;
+    }
+
+    .acc-card {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      transition: 0.15s ease;
+    }
+
+    .acc-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+
+    .acc-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #003b71;
+      margin-bottom: 0.5rem;
+    }
+
+    .acc-type {
+      color: #555;
+      margin-bottom: 0.8rem;
+    }
+
+    .acc-balance {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #0b7a2d;
+      margin-bottom: 0.5rem;
+    }
+
+    .acc-last {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* TRANSACTION LINK */
+    .view-trans {
+      margin-top: 1rem;
+      display: inline-block;
+      padding: 8px 14px;
+      background: #003b71;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: 0.15s;
+    }
+
+    .view-trans:hover {
+      background: #cc1122;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 3rem;
+      color: #777;
+    }
+    footer a {
+      color: #003b71;
+      text-decoration: none;
+    }
+
+    /* MOBILE RESPONSIVE */
+    @media(max-width: 700px) {
+      nav { display: none; }
+      header { flex-direction: column; text-align: center; }
+      .container { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="capital-one-logo.svg" alt="Capital One Logo" />
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="billpay.html">Bill Pay</a>
+    <a href="wire-transfer.html">Wire Transfer</a>
+    <a href="alerts.html">Alerts</a>
+    <a href="rewards-deals.html">Rewards & Deals</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="title">Your Accounts</div>
+
+  <div class="accounts-grid">
+
+    <div class="acc-card">
+      <div class="acc-name">Capital One Checking • 6739</div>
+      <div class="acc-type">Checking Account</div>
+      <div class="acc-balance">$928,029.92</div>
+      <div class="acc-last">Available balance • Updated just now</div>
+      <a class="view-trans" href="transactions.html">View Transactions</a><br><a class="view-trans" style="background:#cc1122;margin-top:8px;display:inline-block;" href="card-services.html">Card Services</a>
+    </div>
+
+    <div class="acc-card">
+      <div class="acc-name">Quicksilver Rewards • 7445</div>
+      <div class="acc-type">Credit Card</div>
+      <div class="acc-balance">$32,245.32</div>
+      <div class="acc-last">Current balance • Updated today</div>
+      <a class="view-trans" href="transactions.html">View Transactions</a><br><a class="view-trans" style="background:#cc1122;margin-top:8px;display:inline-block;" href="card-services.html">Card Services</a>
+    </div>
+
+    <div class="acc-card">
+      <div class="acc-name">Platinum Card • 3783</div>
+      <div class="acc-type">Credit Card</div>
+      <div class="acc-balance">$90,046.41</div>
+      <div class="acc-last">Statement balance • Updated today</div>
+      <a class="view-trans" href="transactions.html">View Transactions</a><br><a class="view-trans" style="background:#cc1122;margin-top:8px;display:inline-block;" href="card-services.html">Card Services</a>
+    </div>
+
+    <div class="acc-card">
+      <div class="acc-name">Venture Rewards • 3894</div>
+      <div class="acc-type">Credit Card</div>
+      <div class="acc-balance">$62,345.67</div>
+      <div class="acc-last">Current balance • Updated today</div>
+      <a class="view-trans" href="transactions.html">View Transactions</a><br><a class="view-trans" style="background:#cc1122;margin-top:8px;display:inline-block;" href="card-services.html">Card Services</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  © 2025 Capital One. All rights reserved.
+  <a href="#">Privacy</a> | <a href="#">Terms</a>
+</footer>
+
+</body>
+</html>

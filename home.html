@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Capital One — Home</title>
+  <style>
+    /* Reset + base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html,body { height:100%; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f0f3f8;
+      color: #1f2933;
+      -webkit-font-smoothing:antialiased;
+      line-height: 1.45;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(90deg,#003b71 0%, #cc1122 100%);
+      color: #fff;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand img { height:34px; width:auto; display:block; }
+    .brand .title { font-weight:600; font-size:1rem; letter-spacing:0.2px; }
+
+    /* Nav */
+    nav { display:flex; gap:10px; align-items:center; }
+    nav a {
+      color: rgba(255,255,255,0.95);
+      text-decoration:none;
+      font-size:0.95rem;
+      padding:8px 10px;
+      border-radius:8px;
+    }
+    nav a:hover { background: rgba(255,255,255,0.06); }
+
+    /* Mobile menu (hidden on desktop) */
+    .menu-toggle {
+      display:none;
+      background:rgba(255,255,255,0.08);
+      border:none;
+      color:#fff;
+      padding:8px;
+      border-radius:8px;
+    }
+
+    /* Main container */
+    .wrap {
+      max-width:1100px;
+      margin:20px auto;
+      padding:20px;
+    }
+    .card {
+      background:#fff;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(15,23,42,0.06);
+    }
+
+    .top-row { display:flex; gap:16px; align-items:flex-start; margin-bottom:18px; }
+    .welcome {
+      color:#002f66;
+      font-size:1.4rem;
+      font-weight:600;
+    }
+
+    /* Credit score */
+    .score {
+      background: linear-gradient(180deg,#eef6ff 0,#fff 100%);
+      border-left:4px solid #cc1122;
+      padding:12px 14px;
+      border-radius:10px;
+      min-width:220px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      justify-content:center;
+    }
+    .score .label { color:#003b71; font-weight:600; font-size:0.95rem; }
+    .score .value { font-weight:700; font-size:1.8rem; color:#0b7a2d; }
+
+    /* Accounts table (desktop) */
+    .accounts { margin-top:8px; }
+    table.accounts-table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:0.95rem;
+    }
+    .accounts-table th, .accounts-table td {
+      padding:12px;
+      border-bottom:1px solid #eef2f7;
+      text-align:left;
+    }
+    .accounts-table th { background:#fbfcfe; color:#5b6168; font-weight:600; font-size:0.9rem; }
+    .accounts-table td.balance { text-align:right; font-weight:700; }
+
+    /* Activity center grid */
+    .activity {
+      margin-top:18px;
+    }
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    .small-card {
+      background:#fff;
+      border-radius:10px;
+      padding:14px;
+      text-align:center;
+      box-shadow:0 4px 12px rgba(15,23,42,0.04);
+      transition:transform 0.14s ease, box-shadow 0.14s ease;
+    }
+    .small-card:hover { transform:translateY(-6px); box-shadow:0 10px 22px rgba(15,23,42,0.07); }
+    .small-card img { height:44px; display:block; margin:0 auto 10px; }
+    .small-card a { color:#003b71; font-weight:600; text-decoration:none; display:block; }
+
+    /* Footer */
+    footer { margin-top:20px; color:#6b7280; font-size:0.85rem; text-align:center; }
+
+    /* Responsive behaviors */
+    @media (max-width: 900px) {
+      .grid { grid-template-columns:repeat(2,1fr); }
+      .top-row { flex-direction:column; gap:12px; }
+      .score { min-width:unset; width:100%; }
+    }
+
+    @media (max-width: 700px) {
+      nav { display:none; }
+      .menu-toggle { display:inline-block; }
+
+      .grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .wrap { padding:14px; }
+
+      /* Make accounts list stack cards for mobile for readability */
+      table.accounts-table { display:none; }
+      .accounts-cards {
+        display:grid;
+        gap:10px;
+        margin-top:10px;
+      }
+      .acct-card {
+        display:flex;
+        justify-content:space-between;
+        gap:8px;
+        padding:12px;
+        border-radius:10px;
+        background:#fff;
+        box-shadow:0 4px 10px rgba(15,23,42,0.04);
+        align-items:center;
+      }
+      .acct-left { display:flex; flex-direction:column; gap:4px; }
+      .acct-title { color:#0f3b6a; font-weight:700; font-size:0.95rem; }
+      .acct-desc { color:#6b7280; font-size:0.85rem; }
+      .acct-balance { font-weight:700; text-align:right; color:#111827; }
+    }
+
+    /* Accessible focus states */
+    a:focus, button:focus { outline:3px solid rgba(0,132,255,0.18); outline-offset:2px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+<img src="capital-one-logo.svg">
+      <div class="title">                                               </div>
+    </div>
+
+    <!-- Desktop nav -->
+    <nav aria-label="Main navigation" id="mainNav">
+      <a href="home.html">Home</a>
+      <a href="accounts.html">Accounts</a>
+      <a href="billpay.html">Bill Pay</a>
+      <a href="wire-transfer.html" id="wireLink">Wire Transfer</a>
+      <a href="alerts.html">Alerts</a>
+      <a href="rewards-deals.html">Rewards</a>
+      <a href="security-center.html">Security</a>
+      <a href="transactions.html">Transactions</a>
+    </nav>
+
+    <!-- Mobile toggle -->
+    <button class="menu-toggle" aria-expanded="false" aria-controls="mobileMenu" id="menuBtn">☰ Menu</button>
+  </header>
+
+  <!-- Mobile menu (hidden by default) -->
+  <div id="mobileMenu" style="display:none; background:linear-gradient(90deg,#003b71,#cc1122); color:#fff;">
+    <div style="max-width:1100px;margin:8px auto;padding:12px; display:flex; flex-direction:column; gap:8px;">
+      <a href="home.html" style="color:#fff; text-decoration:none;">Home</a>
+      <a href="accounts.html" style="color:#fff; text-decoration:none;">Accounts</a>
+      <a href="billpay.html" style="color:#fff; text-decoration:none;">Bill Pay</a>
+      <a href="wire-transfer.html" style="color:#fff; text-decoration:none;">Wire Transfer</a>
+      <a href="alerts.html" style="color:#fff; text-decoration:none;">Alerts</a>
+      <a href="rewards-deals.html" style="color:#fff; text-decoration:none;">Rewards</a>
+      <a href="security-center.html" style="color:#fff; text-decoration:none;">Security</a>
+      <a href="transactions.html" style="color:#fff; text-decoration:none;">Transactions</a>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div class="top-row">
+      <div style="flex:1;">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+              <div class="welcome">Welcome, Dylan Read</div>
+              <div style="color:#6b7280;font-size:0.95rem;margin-top:6px;">Here's a summary of your accounts and recent actions</div>
+            </div>
+            <div class="score" aria-hidden>
+              <div class="label">Your Credit Score</div>
+              <div class="value">812</div>
+              <div style="font-size:0.85rem;color:#6b7280;margin-top:6px;">Updated: Nov 16, 2025</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accounts (desktop table) -->
+        <div class="card accounts" style="margin-top:12px;">
+          <div style="font-weight:700;color:#0b3b6b;margin-bottom:10px;">Accounts</div>
+
+          <table class="accounts-table" aria-label="Accounts summary">
+            <thead>
+              <tr><th>Account</th><th>Description</th><th style="text-align:right;">Balance</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Capital One Checking — 6739</td>
+                <td>Debit Account</td>
+                <td class="balance">$928,029.92</td>
+              </tr>
+              <tr>
+                <td>Quicksilver Rewards — 7445</td>
+                <td>Credit Card</td>
+                <td class="balance">$32,245.32</td>
+              </tr>
+              <tr>
+                <td>Platinum Card — 3783</td>
+                <td>Credit Card</td>
+                <td class="balance">$90,046.41</td>
+              </tr>
+              <tr>
+                <td>Venture Rewards — 3894</td>
+                <td>Credit Card</td>
+                <td class="balance">$62,345.67</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Accounts cards shown on mobile -->
+          <div class="accounts-cards" aria-hidden="true" style="display:none;">
+            <div class="acct-card"><div class="acct-left"><div class="acct-title">Capital One Checking — 6739</div><div class="acct-desc">Debit Account</div></div><div class="acct-balance">$928,029.92</div></div>
+            <div class="acct-card"><div class="acct-left"><div class="acct-title">Quicksilver Rewards — 7445</div><div class="acct-desc">Credit Card</div></div><div class="acct-balance">$32,245.32</div></div>
+            <div class="acct-card"><div class="acct-left"><div class="acct-title">Platinum Card — 3783</div><div class="acct-desc">Credit Card</div></div><div class="acct-balance">$90,046.41</div></div>
+            <div class="acct-card"><div class="acct-left"><div class="acct-title">Venture Rewards — 3894</div><div class="acct-desc">Credit Card</div></div><div class="acct-balance">$62,345.67</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions column (desktop) -->
+      <aside style="width:320px;">
+        <div class="card">
+          <div style="font-weight:700;color:#0b3b6b;margin-bottom:10px;">Quick Actions</div>
+          <div class="grid" style="grid-template-columns:1fr;">
+            <div class="small-card" role="button" tabindex="0">
+              <img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" />
+              <a href="alerts.html">View Alerts</a>
+            </div>
+            <div class="small-card" role="button" tabindex="0" style="margin-top:10px;">
+              <img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" />
+              <a href="billpay.html">Pay a Bill</a>
+            </div>
+            <div class="small-card" role="button" tabindex="0" style="margin-top:10px;">
+              <img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" />
+              <a href="messages.html">Messages</a>
+            </div>
+            <div class="small-card" role="button" tabindex="0" style="margin-top:10px;">
+              <img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" />
+              <a href="wire-transfer.html">Wire Transfer</a>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Activity center (wide) -->
+    <section class="activity card" aria-labelledby="activityTitle">
+      <div id="activityTitle" style="font-weight:700;color:#0b3b6b;">Activity Center</div>
+      <div class="grid" style="margin-top:12px;">
+        <div class="small-card"><img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" /><a href="alerts.html">Alerts</a></div>
+        <div class="small-card"><img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" /><a href="billpay.html">Bill Pay</a></div>
+        <div class="small-card"><img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" /><a href="messages.html">Messages</a></div>
+        <div class="small-card"><img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" /><a href="special-offers.html">Offers & Deals</a></div>
+        <div class="small-card"><img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" /><a href="open-account.html">Open an Account</a></div>
+        <div class="small-card"><img src="/content/dam/veri-ux/icons/security-icon.svg" alt="" /><a href="spending-budgeting.html">Spending & Budgeting</a></div>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 Capital One. All rights reserved. &nbsp; <a href="#" style="color:#003b71;text-decoration:none;">Privacy</a> | <a href="#" style="color:#003b71;text-decoration:none;">Terms</a>
+    </footer>
+  </main>
+
+  <script>
+    // Mobile menu toggle
+    (function(){
+      const btn = document.getElementById('menuBtn');
+      const menu = document.getElementById('mobileMenu');
+      btn && btn.addEventListener('click', function(){
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        if(open) { menu.style.display = 'none'; }
+        else { menu.style.display = 'block'; window.scrollTo({top:0,behavior:'smooth'}); }
+      });
+
+      // Swap accounts table/cards visibility for small screens
+      function toggleAccountsView(){
+        const isSmall = window.matchMedia('(max-width:700px)').matches;
+        const table = document.querySelector('.accounts-table');
+        const cards = document.querySelector('.accounts-cards');
+        if(!table || !cards) return;
+        if(isSmall){
+          table.style.display = 'none';
+          cards.style.display = 'grid';
+        } else {
+          table.style.display = 'table';
+          cards.style.display = 'none';
+        }
+      }
+      toggleAccountsView();
+      window.addEventListener('resize', toggleAccountsView);
+    })();
+  </script>
+</body>
+</html>

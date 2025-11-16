@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Capital One — Bill Pay</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,Arial,sans-serif;background:#f2f4f8;color:#1f2933}
+    header{background:linear-gradient(90deg,#003b71 0%,#cc1122 100%);padding:16px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+    header img{height:36px}
+    nav a{color:#fff;text-decoration:none;margin:0 10px}
+    .container{max-width:980px;margin:28px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+    .title{font-size:1.6rem;color:#003b71;margin-bottom:12px}
+    .bill-section{padding:14px;border-radius:10px;border:1px solid #e7eef8;background:#fff;margin-bottom:16px}
+    .bill-list .bill-item{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-bottom:1px solid #f1f6fb}
+    .bill-list .bill-item:last-child{border-bottom:0}
+    .btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+    .btn.primary{background:#003b71;color:#fff}
+    .btn.ghost{background:transparent;border:1px solid #cfe3fb;color:#003b71}
+    .btn.red{background:#cc1122;color:#fff}
+    .form-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    label{font-size:0.95rem;color:#333}
+    input[type="text"], input[type="number"], input[type="datetime-local"], select{
+      padding:8px;border:1px solid #d5e1ee;border-radius:8px;width:100%;min-width:160px;
+    }
+    .small{font-size:0.9rem;color:#666}
+    .muted{color:#777;font-size:0.95rem}
+    .scheduled-list{margin-top:10px}
+    .scheduled-item{padding:10px;border:1px solid #eef6ff;border-radius:8px;margin-top:8px;display:flex;justify-content:space-between;align-items:center}
+    .switch{display:inline-flex;align-items:center;gap:8px}
+    .note{font-size:0.9rem;color:#666;margin-top:8px}
+
+    /* modal & toast */
+    #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:9999}
+    #modalBox{background:#fff;padding:18px;border-radius:12px;max-width:420px;width:92%;box-shadow:0 12px 40px rgba(0,0,0,0.18)}
+    #modalBox h3{color:#003b71;margin-bottom:8px}
+    #modalBox p{color:#333;margin-bottom:12px}
+    .modal-row{display:flex;gap:8px;align-items:center}
+    .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#003b71;color:#fff;padding:10px 14px;border-radius:10px;z-index:10000;opacity:1;transition:opacity .3s}
+    @media(max-width:720px){ .form-row{flex-direction:column;align-items:stretch} header{flex-direction:column;gap:10px}}
+  </style>
+</head>
+<body>
+<header>
+  <img src="capital-one-logo.svg" alt="Capital One" />
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="accounts.html">Accounts</a>
+    <a href="billpay.html">Bill Pay</a>
+    <a href="wire-transfer.html">Wire Transfer</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="title">Bill Pay</div>
+
+  <section class="bill-section">
+    <h3>Your Billers</h3>
+    <div class="bill-list" id="billList">
+      <!-- will populate dynamically -->
+    </div>
+
+    <div class="form-row" style="margin-top:12px">
+      <input id="newBillerName" type="text" placeholder="Add a new biller (Company name)" />
+      <button id="addBillerBtn" class="btn primary">Add Biller</button>
+    </div>
+  </section>
+
+  <section class="bill-section">
+    <h3>Schedule a Payment</h3>
+    <div class="form-row">
+      <label style="min-width:100px">Biller</label>
+      <select id="billerSelect" style="min-width:220px"></select>
+      <label style="min-width:90px">Amount</label>
+      <input id="payAmount" type="number" step="0.01" placeholder="0.00" style="width:120px" />
+    </div>
+
+    <div class="form-row" style="margin-top:10px;align-items:center">
+      <label style="min-width:90px">When</label>
+      <select id="whenSelect" style="min-width:160px">
+        <option value="now">Now</option>
+        <option value="later">Pick date & time</option>
+      </select>
+
+      <input id="dateTime" type="datetime-local" style="display:none;min-width:220px" />
+      <label class="switch"><input id="autoPayToggle" type="checkbox" /> <span class="small">Enable AutoPay (monthly)</span></label>
+      <button id="scheduleBtn" class="btn primary" style="margin-left:auto">Schedule</button>
+    </div>
+
+    <div class="note">If you choose <strong>Now</strong>, payment will be recorded in Transactions immediately with exact timestamp. AutoPay (monthly) creates a recurring rule.</div>
+  </section>
+
+  <section class="bill-section">
+    <h3>Scheduled Payments</h3>
+    <div id="scheduledList" class="scheduled-list">
+      <!-- scheduled payments show here -->
+    </div>
+  </section>
+
+  <section class="bill-section">
+    <h3>AutoPay</h3>
+    <div id="autoPayList" class="scheduled-list muted">
+      <!-- autopay entries -->
+    </div>
+  </section>
+</div>
+
+<!-- Modal (reusable) -->
+<div id="modalOverlay">
+  <div id="modalBox">
+    <h3 id="modalTitle"></h3>
+    <p id="modalMessage"></p>
+    <div class="modal-row" id="modalInputRow" style="display:none; margin-top:6px">
+      <input id="modalInput" type="text" style="flex:1" />
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button id="modalCancel" class="btn ghost">Cancel</button>
+      <button id="modalOK" class="btn primary">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Utility & storage helpers ---------- */
+function readJSON(key){ try{ return JSON.parse(localStorage.getItem(key))||[] }catch(e){ return [] } }
+function writeJSON(key,val){ localStorage.setItem(key, JSON.stringify(val)) }
+function formatDateISO(dt){ // human friendly
+  const d = new Date(dt);
+  return d.toLocaleString();
+}
+function makeToast(msg){
+  const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=> t.style.opacity='0',2200);
+  setTimeout(()=> t.remove(),2600);
+}
+
+/* ---------- Data model in localStorage ----------
+ - billers: array of {name}
+ - scheduledPayments: array of {id,biller,amount,runAtISO,createdISO,autopay:boolean}
+ - transactions: array of {id,type,amount,description,tsISO}
+ - autopayRules: array of {id,biller,amount,dayOfMonth}
+--------------------------------------------------*/
+const BILLERS_KEY = 'billpay_billers';
+const SCHEDULED_KEY = 'billpay_scheduled';
+const TRANSACTIONS_KEY = 'transactions';
+const AUTOPAY_KEY = 'billpay_autopay';
+
+/* ---------- DOM refs ---------- */
+const billList = document.getElementById('billList');
+const addBillerBtn = document.getElementById('addBillerBtn');
+const newBillerName = document.getElementById('newBillerName');
+const billerSelect = document.getElementById('billerSelect');
+const payAmount = document.getElementById('payAmount');
+const whenSelect = document.getElementById('whenSelect');
+const dateTime = document.getElementById('dateTime');
+const scheduleBtn = document.getElementById('scheduleBtn');
+const scheduledList = document.getElementById('scheduledList');
+const autoPayToggle = document.getElementById('autoPayToggle');
+const autoPayList = document.getElementById('autoPayList');
+
+const modalOverlay = document.getElementById('modalOverlay');
+const modalTitle = document.getElementById('modalTitle');
+const modalMessage = document.getElementById('modalMessage');
+const modalInputRow = document.getElementById('modalInputRow');
+const modalInput = document.getElementById('modalInput');
+const modalOK = document.getElementById('modalOK');
+const modalCancel = document.getElementById('modalCancel');
+
+function openModal(title, message, {showInput=false, defaultValue=''}={}){
+  modalTitle.textContent = title;
+  modalMessage.textContent = message;
+  modalInputRow.style.display = showInput ? 'block' : 'none';
+  modalInput.value = defaultValue;
+  modalOverlay.style.display = 'flex';
+  return new Promise(resolve=>{
+    modalOK.onclick = ()=>{ modalOverlay.style.display='none'; resolve(showInput ? modalInput.value : true); };
+    modalCancel.onclick = ()=>{ modalOverlay.style.display='none'; resolve(false); };
+  });
+}
+
+/* ---------- rendering ---------- */
+function renderBillers(){
+  const billers = readJSON(BILLERS_KEY);
+  billList.innerHTML='';
+  billerSelect.innerHTML='';
+  if(billers.length===0){
+    billList.innerHTML = '<div class="muted">No billers saved yet. Add one above.</div>';
+  } else {
+    billers.forEach(b=>{
+      const d = document.createElement('div'); d.className='bill-item';
+      d.innerHTML = `<span>${b.name}</span><div style="display:flex;gap:8px"><button class="btn ghost payBtn" data-biller="${b.name}">Pay</button><button class="btn" data-biller="${b.name}" data-action="edit">Edit</button></div>`;
+      billList.appendChild(d);
+      // add to select
+      const opt = document.createElement('option'); opt.value=b.name; opt.textContent=b.name;
+      billerSelect.appendChild(opt);
+    });
+    // wire pay buttons
+    billList.querySelectorAll('.payBtn').forEach(btn=>{
+      btn.onclick = ()=> {
+        billerSelect.value = btn.dataset.biller;
+        whenSelect.value = 'now';
+      };
+    });
+    billList.querySelectorAll('button[data-action="edit"]').forEach(b=>{
+      b.onclick = async () => {
+        const current = b.dataset.biller;
+        const val = await openModal('Edit Biller','Change biller name:',{showInput:true,defaultValue:current});
+        if(val){
+          let billers = readJSON(BILLERS_KEY);
+          billers = billers.map(x=> x.name===current ? {name:val} : x);
+          writeJSON(BILLERS_KEY,billers);
+          renderBillers();
+          makeToast('Biller updated');
+        }
+      };
+    });
+  }
+}
+
+function renderScheduled(){
+  const scheduled = readJSON(SCHEDULED_KEY);
+  scheduledList.innerHTML = scheduled.length ? '' : '<div class="muted">No scheduled payments.</div>';
+  scheduled.forEach(s=>{
+    const el = document.createElement('div'); el.className='scheduled-item';
+    el.innerHTML = `<div><strong>${s.biller}</strong><div class="small">${s.autopay? 'AutoPay (monthly) • ':'One-time • '}Scheduled: ${formatDateISO(s.runAtISO)}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><div class="small">$${Number(s.amount).toFixed(2)}</div><button class="btn ghost" data-id="${s.id}" data-action="cancel">Cancel</button></div>`;
+    scheduledList.appendChild(el);
+  });
+  // cancel handlers
+  scheduledList.querySelectorAll('button[data-action="cancel"]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const ok = await openModal('Cancel Payment','Cancel this scheduled payment?');
+      if(ok){
+        let arr = readJSON(SCHEDULED_KEY).filter(x=> x.id !== btn.dataset.id);
+        writeJSON(SCHEDULED_KEY,arr);
+        renderScheduled();
+        makeToast('Scheduled payment cancelled');
+      }
+    };
+  });
+}
+
+function renderAutoPay(){
+  const rules = readJSON(AUTOPAY_KEY);
+  autoPayList.innerHTML = rules.length ? '' : '<div class="muted">No AutoPay billers set.</div>';
+  rules.forEach(r=>{
+    const el = document.createElement('div'); el.className='scheduled-item';
+    el.innerHTML = `<div><strong>${r.biller}</strong><div class="small">Amount: $${Number(r.amount).toFixed(2)} • Day: ${r.dayOfMonth}</div></div>
+      <div><button class="btn ghost" data-id="${r.id}" data-action="remove">Remove</button></div>`;
+    autoPayList.appendChild(el);
+  });
+  autoPayList.querySelectorAll('button[data-action="remove"]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      if(await openModal('Remove AutoPay','Remove this AutoPay rule?')){
+        const id = btn.dataset.id;
+        const arr = readJSON(AUTOPAY_KEY).filter(x=> x.id !== id);
+        writeJSON(AUTOPAY_KEY,arr);
+        renderAutoPay();
+        makeToast('AutoPay removed');
+      }
+    };
+  });
+}
+
+/* ---------- scheduling & transactions ---------- */
+function addTransaction(type,amount,description,tsISO){
+  const tx = readJSON(TRANSACTIONS_KEY);
+  tx.unshift({ id: 'tx_'+Date.now(), type, amount:Number(amount), description, tsISO });
+  writeJSON(TRANSACTIONS_KEY,tx);
+  // Note: your transactions page should read TRANSACTIONS_KEY to display these
+}
+
+function schedulePayment(biller,amount,runAtISO,autopay=false){
+  const scheduled = readJSON(SCHEDULED_KEY);
+  const id = 'sched_' + Date.now();
+  scheduled.push({ id, biller, amount:Number(amount), runAtISO, createdISO: new Date().toISOString(), autopay });
+  writeJSON(SCHEDULED_KEY, scheduled);
+  renderScheduled();
+}
+
+/* ---------- wire up events ---------- */
+document.getElementById('addBillerBtn').onclick = async ()=>{
+  const name = newBillerName.value.trim();
+  if(!name) { makeToast('Enter a biller name'); return; }
+  const list = readJSON(BILLERS_KEY);
+  list.push({name});
+  writeJSON(BILLERS_KEY,list);
+  newBillerName.value='';
+  renderBillers();
+  makeToast('Biller added');
+};
+
+whenSelect.onchange = ()=>{
+  dateTime.style.display = whenSelect.value === 'later' ? 'inline-block' : 'none';
+};
+
+scheduleBtn.onclick = async ()=>{
+  const biller = billerSelect.value;
+  const amount = payAmount.value;
+  if(!biller){ makeToast('Choose a biller'); return; }
+  if(!amount || isNaN(Number(amount)) || Number(amount)<=0){ makeToast('Enter a valid amount'); return; }
+
+  // If user chose Now -> confirm and create transaction immediately
+  if(whenSelect.value === 'now'){
+    const ok = await openModal('Confirm Payment', `Send $${Number(amount).toFixed(2)} to ${biller} now?`);
+    if(!ok) return;
+    const nowISO = new Date().toISOString();
+    addTransaction('payment', amount, `Payment to ${biller}`, nowISO);
+    makeToast(`Paid $${Number(amount).toFixed(2)} to ${biller} • ${formatDateISO(nowISO)}`);
+    // If autopay toggled, create a rule as well
+    if(autoPayToggle.checked){
+      const rules = readJSON(AUTOPAY_KEY);
+      const day = new Date().getDate();
+      rules.push({ id:'ap_'+Date.now(), biller, amount:Number(amount), dayOfMonth: day });
+      writeJSON(AUTOPAY_KEY,rules);
+      renderAutoPay();
+      makeToast('AutoPay rule created (monthly)');
+    }
+    renderScheduled(); renderAutoPay();
+    return;
+  }
+
+  // Picked a future date/time
+  const dtVal = dateTime.value;
+  if(!dtVal){ makeToast('Select a date & time'); return; }
+  const runAt = new Date(dtVal);
+  if(isNaN(runAt.getTime())){ makeToast('Invalid date/time'); return; }
+  if(runAt.getTime() <= Date.now()){ makeToast('Choose a future time'); return; }
+
+  // Schedule it
+  schedulePayment(biller, amount, runAt.toISOString(), autoPayToggle.checked);
+  if(autoPayToggle.checked){
+    const rules = readJSON(AUTOPAY_KEY);
+    rules.push({ id:'ap_'+Date.now(), biller, amount:Number(amount), dayOfMonth: runAt.getDate() });
+    writeJSON(AUTOPAY_KEY, rules);
+    renderAutoPay();
+  }
+  makeToast(`Payment scheduled for ${formatDateISO(runAt.toISOString())}`);
+};
+
+/* cancel scheduled / autopay action buttons wired in render functions */
+
+function initDemoDataIfEmpty(){
+  if(readJSON(BILLERS_KEY).length === 0){
+    writeJSON(BILLERS_KEY, [{name:'AT&T'},{name:'Comcast'},{name:'Capital One Auto'},{name:'Netflix'}]);
+  }
+}
+
+initDemoDataIfEmpty();
+renderBillers();
+renderScheduled();
+renderAutoPay();
+
+/* ---------- background runner (demo) ----------
+ This small interval simulates executing scheduled payments.
+ It checks scheduled payments and executes those whose runAt <= now.
+ In a real app this is a server-side job.
+------------------------------------------------*/
+setInterval(()=>{
+  const scheduled = readJSON(SCHEDULED_KEY);
+  const now = Date.now();
+  let changed = false;
+  scheduled.slice().forEach(s=>{
+    if(new Date(s.runAtISO).getTime() <= now){
+      // execute: add transaction and remove the scheduled entry (if autopay, reschedule next month)
+      addTransaction('payment', s.amount, `Scheduled payment to ${s.biller}`, new Date().toISOString());
+      makeToast(`Executed scheduled payment: ${s.biller} $${Number(s.amount).toFixed(2)}`);
+      // remove current schedule
+      let arr = readJSON(SCHEDULED_KEY).filter(x=> x.id !== s.id);
+      // if autopay, reschedule next month
+      if(s.autopay){
+        const next = new Date(s.runAtISO);
+        next.setMonth(next.getMonth() + 1);
+        arr.push({ id:'sched_'+Date.now() + Math.random(), biller:s.biller, amount:s.amount, runAtISO: next.toISOString(), createdISO: new Date().toISOString(), autopay:true });
+        // ensure autopay rule exists (already created when scheduled)
+      }
+      writeJSON(SCHEDULED_KEY, arr);
+      changed = true;
+    }
+  });
+  if(changed){ renderScheduled(); renderAutoPay(); }
+}, 10_000); // checks every 10s (demo) — in real life server handles this
+</script>
+</body>
+</html>
